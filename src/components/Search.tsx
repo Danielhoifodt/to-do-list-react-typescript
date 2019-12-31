@@ -1,5 +1,6 @@
 import React from 'react';
-import TodoList from './TodoList';
+
+
 
 const Search: React.FC = () => {
     let [newTodo, setNewTodo] = React.useState();
@@ -11,9 +12,32 @@ const Search: React.FC = () => {
     }
     let onButtonSubmit = (event:any) => {
         event.preventDefault();
-        setTodos([...todos, {id: Date.now(), text: newTodo}]);
-        console.log(todos);
+        if(todos === []){
+            return;
+        }else{
+          setTodos([...todos, {id: Date.now(), text: newTodo}]);  
+        }
+        
     }
+
+    let deleteTodo = (id: any) =>
+  {
+      const delTodo = [...todos]
+
+      const deletedTodo = delTodo.filter((item:any) => item.id !== id);
+
+        setTodos(deletedTodo);
+  }
+
+
+    let li = todos.map((todo:any): any => {
+        return <li key={todo.id}>{todo.text}{" "}<button onClick={() => deleteTodo(todo.id)}>X</button></li>
+    } ) 
+
+    let delAllTodos = () => {
+        setTodos([{}]);
+    }
+    
 
   return (
     <div>
@@ -21,7 +45,10 @@ const Search: React.FC = () => {
           <input type="text" onChange={onChangeTodo}></input>
           <input type="submit"></input>
       </form>
-      <TodoList todos={todos}/>
+      <ul>
+          {li}
+      </ul>
+      <button onClick={delAllTodos}>Clear list...</button>
     </div>
   );
 }

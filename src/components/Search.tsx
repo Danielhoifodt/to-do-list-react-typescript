@@ -3,39 +3,58 @@ import React from 'react';
 
 
 const Search: React.FC = () => {
+    //set state hooks
     let [newTodo, setNewTodo] = React.useState();
-
     let [todos, setTodos] = React.useState([{}]);
-
+    // get input value
     let onChangeTodo = (event:any): void => {
         setNewTodo(event.target.value);
     }
+    // update state on button submit
     let onButtonSubmit = (event:any) => {
         event.preventDefault();
-        if(todos === []){
-            return;
-        }else{
-          setTodos([...todos, {id: Date.now(), text: newTodo}]);  
-        }
+        setTodos([{id: Date.now(), text: newTodo}, ...todos]);
+          
+        postTodos();
+        console.log(todos);
         
     }
-
+    // delete todo
     let deleteTodo = (id: any) =>
   {
       const delTodo = [...todos]
-
       const deletedTodo = delTodo.filter((item:any) => item.id !== id);
-
         setTodos(deletedTodo);
   }
 
-
-    let li = todos.map((todo:any): any => {
-        return <li key={todo.id}>{todo.text}{" "}<button onClick={() => deleteTodo(todo.id)}>X</button></li>
-    } ) 
-
+    // sort out the todos in li
+     let li = todos.map((todo:any): any => {
+        return <li key={todo.id}>{todo.text}{" "}<button onClick={() => deleteTodo(todo.id)}>X</button></li>   
+        })
+     
+    // delete all todos
     let delAllTodos = () => {
-        setTodos([{}]);
+        setTodos([{id:Date.now(), text:""}]);
+    }
+    React.useEffect(() => {
+        fetch('http://localhost:4000/')
+        .then(response => response.json())
+        .then(response => setTodos(response.data))
+    }, []);
+
+    function postTodos(){
+        
+
+        fetch(`http://localhost:4000/add?text=${todos.map((todo:any)=> todo.text)}&id=${todos.map((todo:any)=> todo.id)}`, {
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8'
+              },
+            body: JSON.stringify(todos)
+        })
+        .then(response => response.text())
+        .then(response => console.log(response))
+        .catch(err => console.error(err))
     }
     
 

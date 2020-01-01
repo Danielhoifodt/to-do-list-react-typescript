@@ -12,8 +12,7 @@ const Search: React.FC = () => {
     let onButtonSubmit = (event:any) => {
         event.preventDefault();  
         postTodos({text:newTodo});
-
-        
+        window.location.reload();
     }
     // delete todo
     let deleteTodo = (id: any) =>
@@ -45,7 +44,8 @@ const Search: React.FC = () => {
             method: "post",
             mode: "cors",
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
               },
             body: JSON.stringify(data)
         })

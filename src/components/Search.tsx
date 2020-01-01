@@ -10,10 +10,8 @@ const Search: React.FC = () => {
     }
     // update state on button submit
     let onButtonSubmit = (event:any) => {
-        event.preventDefault();
-        setTodos([ {text: newTodo}, ...todos]);
-          
-        postTodos(todos.map((todo:any) => todo.text));
+        event.preventDefault();  
+        postTodos({text:newTodo});
 
         
     }
@@ -38,18 +36,23 @@ const Search: React.FC = () => {
         fetch('http://localhost:4000/')
         .then(response => response.json())
         .then(response => setTodos(response.data))
-    }, []);
+    },[]);
 
     function postTodos(data:any){
+
+        console.log(data);
         fetch('http://localhost:4000/add', {
             method: "post",
+            mode: "cors",
             headers: {
-                'Content-Type': 'application/json; charset=UTF-8'
+                'Accept': 'application/json'
               },
             body: JSON.stringify(data)
         })
-        .then(data => console.log("dette er dataene", data))
-        .catch(err => console.error(err))
+        .then(res => console.log(res))
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
     
   return (

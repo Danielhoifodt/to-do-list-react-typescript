@@ -1,12 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql');
+const bodyparser = require('body-parser');
 
 const app = express();
+app.use(cors());
 
 const SELECT_ALL_FROM_TODOS = 'SELECT * FROM todos';
 
 app.use(express.json());
+bodyparser.json()
+
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -21,7 +25,7 @@ connection.connect(err => {
     }
 });
 
-app.use(cors());
+
 
 app.get('/', (req, res) => {
     connection.query(SELECT_ALL_FROM_TODOS, (err, result) => {
@@ -36,7 +40,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/add', (req, res) => {
-    const { text } = req.query;
+    const { text } = req.body;
     const INSERT_TODOS = `INSERT INTO todos (text) VALUES('${text}')`;
     connection.query(INSERT_TODOS, (err, result) => {
         if(err){

@@ -6,6 +6,8 @@ const app = express();
 
 const SELECT_ALL_FROM_TODOS = 'SELECT * FROM todos';
 
+app.use(express.json());
+
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -33,9 +35,9 @@ app.get('/', (req, res) => {
     })
 })
 
-app.get('/add', (req, res) => {
-    const { id, text } = req.query;
-    const INSERT_TODOS = `INSERT INTO todos (text, id) VALUES('${text}', '${id}')`;
+app.post('/add', (req, res) => {
+    const { text } = req.query;
+    const INSERT_TODOS = `INSERT INTO todos (text) VALUES('${text}')`;
     connection.query(INSERT_TODOS, (err, result) => {
         if(err){
             return res.send(err);

@@ -1,7 +1,5 @@
 import React from 'react';
 
-
-
 const Search: React.FC = () => {
     //set state hooks
     let [newTodo, setNewTodo] = React.useState();
@@ -13,10 +11,10 @@ const Search: React.FC = () => {
     // update state on button submit
     let onButtonSubmit = (event:any) => {
         event.preventDefault();
-        setTodos([{id: Date.now(), text: newTodo}, ...todos]);
+        setTodos([ {text: newTodo}, ...todos]);
           
-        postTodos();
-        console.log(todos);
+        postTodos(todos.map((todo:any) => todo.text));
+
         
     }
     // delete todo
@@ -42,22 +40,18 @@ const Search: React.FC = () => {
         .then(response => setTodos(response.data))
     }, []);
 
-    function postTodos(){
-        
-
-        fetch(`http://localhost:4000/add?text=${todos.map((todo:any)=> todo.text)}&id=${todos.map((todo:any)=> todo.id)}`, {
+    function postTodos(data:any){
+        fetch('http://localhost:4000/add', {
             method: "post",
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8'
               },
-            body: JSON.stringify(todos)
+            body: JSON.stringify(data)
         })
-        .then(response => response.text())
-        .then(response => console.log(response))
+        .then(data => console.log("dette er dataene", data))
         .catch(err => console.error(err))
     }
     
-
   return (
     <div>
       <form onSubmit={onButtonSubmit}>

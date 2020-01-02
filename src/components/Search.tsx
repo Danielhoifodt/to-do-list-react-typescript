@@ -15,12 +15,19 @@ const Search: React.FC = () => {
         window.location.reload();
     }
     // delete todo
-    let deleteTodo = (id: any) =>
+    let deleteTodo = (id: number) =>
   {
-      const delTodo = [...todos]
-      const deletedTodo = delTodo.filter((item:any) => item.id !== id);
-        setTodos(deletedTodo);
-  }
+      fetch('http://localhost:4000/'+ id, {
+          method: "DELETE",
+          mode: "cors",
+          headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json'
+        }
+      })
+      .then(response => console.log(response))
+      window.location.reload();
+    }
 
     // sort out the todos in li
      let li = todos.map((todo:any): any => {
@@ -29,17 +36,25 @@ const Search: React.FC = () => {
      
     // delete all todos
     let delAllTodos = () => {
-        setTodos([{id:Date.now(), text:""}]);
+        fetch('http://localhost:4000/', {
+            method: "DELETE",
+            mode: "cors",
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(response => setTodos([response.data]))
     }
     React.useEffect(() => {
         fetch('http://localhost:4000/')
         .then(response => response.json())
         .then(response => setTodos(response.data))
     },[]);
+    console.log(todos);
 
     function postTodos(data:any){
-
-        console.log(data);
         fetch('http://localhost:4000/add', {
             method: "post",
             mode: "cors",
